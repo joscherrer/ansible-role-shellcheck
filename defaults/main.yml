@@ -1,2 +1,5 @@
 ---
 # defaults file for ansible-role-shellcheck
+
+shellcheck_force_install: false
+shellcheck_install_version: "7.0.0"

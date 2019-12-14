@@ -1,0 +1,16 @@
+- name: Downloading the latest version of shellcheck
+  unarchive:
+    src: "https://storage.googleapis.com/shellcheck/shellcheck-v{{ shellcheck_git_version }}.linux.x86_64.tar.xz"
+    dest: /opt/
+    remote_src: yes
+  become: yes
+
+- name: Installing shellcheck
+  become: yes
+  file:
+    path: "/usr/bin/shellcheck"
+    src: "/opt/shellcheck-v{{ shellcheck_git_version }}/shellcheck"
+    owner: root
+    group: root
+    state: link
+    mode: 0755

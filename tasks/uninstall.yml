@@ -1,0 +1,11 @@
+- name: Uninstalling shellcheck
+  become: true
+  file:
+    path: "/usr/bin/shellcheck"
+    state: absent
+
+- name: Removing source folder
+  become: true
+  file:
+    path: "/opt/shellcheck-v{{ shellcheck_local_version }}"
+    state: absent
