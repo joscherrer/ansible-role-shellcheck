@@ -2,7 +2,9 @@
 # tasks file for ansible-role-shellcheck
 
 - name: Getting latest shellcheck version
-  shell: git ls-remote --sort='v:refname' --tags https://github.com/koalaman/shellcheck.git | tail -n1 | sed 's/.*\///; s/\^{}//' | sed 's/v//'
+  shell: | # noqa 303
+    set -o pipefail
+    git ls-remote --sort='v:refname' --tags https://github.com/koalaman/shellcheck.git | tail -n1 | sed 's/.*\///; s/\^{}//' | sed 's/v//'
   register: shellcheck_git
   changed_when: false
 
@@ -20,7 +22,9 @@
   register: shellcheck_installed
 
 - name: Getting current shellcheck version
-  shell: /usr/bin/shellcheck --version | grep "version:" | cut -c10-
+  shell: |
+    set -o pipefail
+    /usr/bin/shellcheck --version | grep "version:" | cut -c10-
   when: shellcheck_installed.stat.exists
   register: shellcheck_local
   changed_when: false
@@ -35,16 +39,17 @@
     shellcheck_git_version: "{{ shellcheck_git.stdout }}"
   when: not shellcheck_force_install
 
-- set_fact:
+- name: Set local version
+  set_fact:
     shellcheck_local_version: "{{ shellcheck_local.stdout }}"
   when: shellcheck_installed.stat.exists
 
 - include_tasks: uninstall.yml
-  when: 
-    - shellcheck_installed.stat.exists 
+  when:
+    - shellcheck_installed.stat.exists
     - (shellcheck_git_version != shellcheck_local_version) or shellcheck_force_install
 
 - include_tasks: install.yml
-  when: not shellcheck_installed.stat.exists or 
-        shellcheck_force_install or 
+  when: not shellcheck_installed.stat.exists or
+        shellcheck_force_install or
         (shellcheck_git_version != shellcheck_local_version)
