@@ -20,5 +20,3 @@ dependencies:
       git_install_from_source_force_update: true
       git_install_path: "/usr"
       git_install_version: "2.24.1"
-  # List your role dependencies here, one per line. Be sure to remove the '[]' above,
-  # if you add dependencies to this list.
